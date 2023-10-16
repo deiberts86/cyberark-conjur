@@ -1,0 +1,14 @@
+CONJUR_NAMESPACE=conjur
+DATA_KEY="$(docker run --rm cyberark/conjur data-key generate)"
+HELM_RELEASE=https://github.com/cyberark/conjur-oss-helm-chart/releases/download/v2.0.7/conjur-oss-2.0.7.tgz
+helm upgrade -i "$HELM_RELEASE" \
+--create-namespace
+--namespace "$CONJUR_NAMESPACE" \
+--set image.repository=registry.connect.redhat.com/cyberark/conjur \
+--set image.tag=latest \
+--set nginx.image.repository=registry.connect.redhat.com/cyberark/conjur-nginx \
+--set nginx.image.tag=latest \
+--set postgres.image.repository=registry.redhat.io/rhel8/postgresql-15 \
+--set postgres.image.tag=latest \
+--set openshift.enabled=true \
+--set dataKey="$DATA_KEY"
